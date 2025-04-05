@@ -29,7 +29,7 @@ type tablePrinter struct {
 
 func (tp *tablePrinter) hasVisibleColumns() bool {
 	// Check if any data columns will be shown
-	return !tp.opts.HideRequests || !tp.opts.HideLimits || tp.opts.ShowUtil || tp.opts.ShowPodCount
+	return !tp.opts.HideRequests || !tp.opts.HideLimits || tp.opts.ShowUtil || tp.opts.ShowPodCount || len(tp.opts.LabelColumns) > 0
 }
 
 type tableLine struct {
@@ -44,6 +44,7 @@ type tableLine struct {
 	memoryLimits   string
 	memoryUtil     string
 	podCount       string
+	labelColumns   []string
 }
 
 var headerStrings = tableLine{
@@ -140,6 +141,13 @@ func (tp *tablePrinter) getLineItems(tl *tableLine) []string {
 
 	if tp.opts.ShowPodCount {
 		lineItems = append(lineItems, tl.podCount)
+	}
+
+	// make sure label columns are added to the end
+	// so that remaining columns not effected by these dynamic columns
+	if tp.opts.LabelColumns != "" {
+		selectedLabels := tp.opts.SplitLabelColumns()
+		lineItems = append(lineItems, selectedLabels...)
 	}
 
 	return lineItems

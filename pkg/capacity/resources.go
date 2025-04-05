@@ -62,6 +62,7 @@ type clusterMetric struct {
 
 type nodeMetric struct {
 	name       string
+	labels     map[string]string
 	cpu        *resourceMetric
 	memory     *resourceMetric
 	podMetrics map[string]*podMetric
@@ -108,7 +109,8 @@ func buildClusterMetric(podList *corev1.PodList, pmList *v1beta1.PodMetricsList,
 		totalPodCurrent += tmpPodCount
 		totalPodAllocatable += node.Status.Allocatable.Pods().Value()
 		cm.nodeMetrics[node.Name] = &nodeMetric{
-			name: node.Name,
+			name:   node.Name,
+			labels: map[string]string{},
 			cpu: &resourceMetric{
 				resourceType: "cpu",
 				allocatable:  node.Status.Allocatable["cpu"],
@@ -122,6 +124,10 @@ func buildClusterMetric(podList *corev1.PodList, pmList *v1beta1.PodMetricsList,
 				current:     tmpPodCount,
 				allocatable: node.Status.Allocatable.Pods().Value(),
 			},
+		}
+
+		if node.Labels != nil {
+			cm.nodeMetrics[node.Name].labels = node.Labels
 		}
 	}
 

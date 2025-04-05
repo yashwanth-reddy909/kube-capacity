@@ -17,12 +17,15 @@ package capacity
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/robscott/kube-capacity/pkg/util/hashmap"
 	"sigs.k8s.io/yaml"
 )
 
 type listNodeMetric struct {
 	Name     string              `json:"name"`
+	Labels   map[string]string   `json:"labels,omitempty"`
 	CPU      *listResourceOutput `json:"cpu,omitempty"`
 	Memory   *listResourceOutput `json:"memory,omitempty"`
 	Pods     []*listPod          `json:"pods,omitempty"`
@@ -113,6 +116,11 @@ func (lp *listPrinter) buildListClusterMetrics() listClusterMetrics {
 
 		if lp.opts.ShowPodCount {
 			node.PodCount = nodeMetric.podCount.podCountString()
+		}
+
+		if lp.opts.LabelColumns != "" {
+			selectLabels := strings.Split(lp.opts.LabelColumns, ",")
+			node.Labels = hashmap.SelectKeys[string, string](nodeMetric.labels, selectLabels)
 		}
 
 		if lp.opts.ShowPods || lp.opts.ShowContainers {

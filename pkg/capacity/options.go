@@ -1,5 +1,7 @@
 package capacity
 
+import "strings"
+
 // Options is a struct containing the command line options
 // FetchAndPrint depends on
 type Options struct {
@@ -7,6 +9,7 @@ type Options struct {
 	ShowPods              bool
 	ShowUtil              bool
 	ShowPodCount          bool
+	LabelColumns          string
 	HideRequests          bool
 	HideLimits            bool
 	PodLabels             string
@@ -23,4 +26,8 @@ type Options struct {
 	AvailableFormat       bool
 	ImpersonateUser       string
 	ImpersonateGroup      string
+}
+
+func (o *Options) SplitLabelColumns() []string {
+	return strings.Split(o.LabelColumns, ",")
 }

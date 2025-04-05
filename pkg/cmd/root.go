@@ -85,6 +85,8 @@ func init() {
 		"hide-requests", "", false, "hide requests from output")
 	rootCmd.PersistentFlags().BoolVarP(&opts.HideLimits,
 		"hide-limits", "", false, "hide limits from output")
+	rootCmd.PersistentFlags().StringVarP(&opts.LabelColumns,
+		"label-columns", "", "", "comma separated list of labels to show as columns in output")
 }
 
 // Execute is the primary entrypoint for this CLI
