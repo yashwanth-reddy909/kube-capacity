@@ -299,7 +299,7 @@ func TestNodeLabelHeaders(t *testing.T) {
 	assert.Equal(t, []string{}, nodeLabelHeaders(""))
 }
 
-func TestNodeLabelValues(t *testing.T) {	
+func TestNodeLabelValues(t *testing.T) {
 	labels := map[string]string{
 		"example.io/os": "example-os-1",
 		"zone":          "example-zone-1",
